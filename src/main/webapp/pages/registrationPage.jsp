@@ -7,10 +7,8 @@
 
     <div class="col-sm-offset-1">
         <h3 style="margin-top: 11px">Реєстрація</h3>
+        <%@include file="templates/forms/f_reg.jsp" %>
     </div>
-
-    <%@include file="templates/forms/f_reg.jsp" %>
-
 </div>
 
 <%@include file="templates/main_parts/footer.jsp" %>

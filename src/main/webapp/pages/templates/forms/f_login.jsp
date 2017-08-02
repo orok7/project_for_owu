@@ -3,10 +3,10 @@
 <form name='loginForm' class="form-horizontal" action="/user/login" method="post">
 
     <div class="form-group">
-        <label class="control-label col-sm-2" for="uliEmail">Email:</label>
+        <label class="control-label col-sm-2" for="uliEmail">Логін:</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="uliEmail"
-                   name="username" placeholder="Введіть Ваш Email"/>
+                   name="username" placeholder="Введіть Ваш логін (ім'я користувача)"/>
         </div>
     </div>
 

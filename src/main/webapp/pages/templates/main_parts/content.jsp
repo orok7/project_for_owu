@@ -14,9 +14,18 @@
 
     <div class="conteiner">
         <sec:authorize access="isAuthenticated()">
-            <h1>Welcome <sec:authorize access="hasRole('ADMIN')">
-                <a href="/admin/adminPage">to admin page</a>
-            </sec:authorize>!!</h1>
+            <h1>Welcome ${pageContext.request.userPrincipal.name}!!!</h1>
+            <sec:authorize access="hasRole('ADMIN')">
+                <h4>
+                    <a href="/admin/adminPage">You can go to admin page...</a>
+                </h4>
+            </sec:authorize>
+            <form action="/user/logout" method="post" id="logoutForm">
+                <input type="submit" class="btn-link" value="logout...">
+                <input type="hidden"
+                       name="${_csrf.parameterName}"
+                       value="${_csrf.token}" />
+            </form>
         </sec:authorize>
 
     </div>

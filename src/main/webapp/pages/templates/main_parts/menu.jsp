@@ -3,14 +3,14 @@
 
 <menu class="menubg fright">
     <ul>
-        <li><a href="#">Печатки</a>
-            <ul>
-                <li><a href="#">ФОП</a></li>
-                <li><a href="#">Юридичним</a></li>
-                <li><a href="#">Лікарям</a></li>
-                <li><a href="#">Адвокатам</a></li>
-                <li><a href="#">Експертам</a></li>
-                <li><a href="#">Інші</a></li>
+        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Печатки</a>
+            <ul class="dropdown-menu">
+                <li class="menudropcss"><a href="#">ФОП</a></li>
+                <li class="menudropcss"><a href="#">Юридичним</a></li>
+                <li class="menudropcss"><a href="#">Лікарям</a></li>
+                <li class="menudropcss"><a href="#">Адвокатам</a></li>
+                <li class="menudropcss"><a href="#">Експертам</a></li>
+                <li class="menudropcss"><a href="#">Інші</a></li>
             </ul>
         </li>
         <li><a href="#">Штампи</a></li>

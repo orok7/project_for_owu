@@ -64,28 +64,28 @@
     <div class="form-group">
         <label class="control-label col-sm-4" for="urUsername">Логін:</label>
         <div class="col-sm-7">
-            <input type="text" class="form-control" id="urUsername" name="urUsername" placeholder="Введіть Ваш Логін"/>
+            <input type="text" class="form-control uData" id="urUsername" name="urUsername" placeholder="Введіть Ваш Логін" required>
         </div>
     </div>
 
     <div class="form-group">
         <label class="control-label col-sm-4" for="urEmail">Email:</label>
         <div class="col-sm-7">
-            <input type="email" class="form-control" id="urEmail" name="urEmail" placeholder="Введіть Ваш Email"/>
+            <input type="email" class="form-control uData" id="urEmail" name="urEmail" placeholder="Введіть Ваш Email" required>
         </div>
     </div>
 
     <div class="form-group">
         <label class="control-label col-sm-4" for="urPassword">Пароль:</label>
         <div class="col-sm-7">
-            <input type="password" class="form-control" id="urPassword" name="urPassword" placeholder="password"/>
+            <input type="password" class="form-control uData" id="urPassword" name="urPassword" placeholder="password" required>
         </div>
     </div>
 
     <div class="form-group">
         <label class="control-label col-sm-4" for="urPasswordAg">Підтвердіть пароль:</label>
         <div class="col-sm-7">
-            <input type="password" class="form-control" id="urPasswordAg" name="urPasswordAg" placeholder="password"/>
+            <input type="password" class="form-control uData" id="urPasswordAg" name="urPasswordAg" placeholder="password" required>
         </div>
     </div>
 
@@ -119,7 +119,6 @@
 
 <script>
     var regIsCompany = document.getElementById('urIsCompany');
-    var regIndividualData = document.getElementById('urIndividualData');
     var regCompanyData = document.getElementById("urCompanyData");
     regIsCompany.onclick = function () {
         console.log("regIsCompany.onclick");
@@ -140,12 +139,17 @@
 <script>
     var isAccepted = document.getElementById('isAccepted');
     var submitReg = document.getElementById('submitReg');
+
     isAccepted.onclick = function () {
         console.log("isAccepted.onclick");
-        if (isAccepted.checked) {
-            submitReg.disabled = false;
-        } else {
-            submitReg.disabled = true;
-        }
+        submitReg.disabled = !isAccepted.checked;
+    }
+
+    submitReg.onclick = function () {
+        console.log(document.getElementById('urIName').value);
+        console.log($('#urIName'));
+        console.log(document.getElementById('urPasswordAg').innerText);
+        if ($('#urPassword') == $('#urPasswordAg').text) console.log('==');;
+
     }
 </script>
