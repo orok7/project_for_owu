@@ -8,7 +8,7 @@
 <%--<c:url value="/j_spring_security_logout" var="logoutUrl" />--%>
 
 <!-- csrt for log out-->
-<form action="<%--${logoutUrl}--%>/logout" method="post" id="logoutForm">
+<form action="/logout" method="post" id="logoutForm">
     <input type="hidden"
            name="${_csrf.parameterName}"
            value="${_csrf.token}" />

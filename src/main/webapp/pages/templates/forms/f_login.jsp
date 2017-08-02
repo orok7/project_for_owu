@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<form name='loginForm' class="form-horizontal" action="/login" method="post">
+<form name='loginForm' class="form-horizontal" action="/user/login" method="post">
 
     <div class="form-group">
         <label class="control-label col-sm-2" for="uliEmail">Email:</label>
@@ -23,10 +23,10 @@
             <button type="submit" class="btn btn-success btn-block">Увійти</button>
             <div style="margin-top: 15px">
                 <c:if test="${not empty error}">
-                    <div class="alert alert-danger">${error}</div>
+                    <div class="alert alert-danger"><h4>${error}</h4></div>
                 </c:if>
                 <c:if test="${not empty msg}">
-                    <div class="alert alert-info">${msg}</div>
+                    <div class="alert alert-info"><h4>${msg}</h4></div>
                 </c:if>
             </div>
             <hr style="margin-bottom: 0">

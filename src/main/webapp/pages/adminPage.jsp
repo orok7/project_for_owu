@@ -2,7 +2,19 @@
 
 <div class="container">
     <h1>Welcome to Admin Page</h1>
-    <a href="/logout">Close admin session</a>
+    <form action="/user/logout" method="post" id="logoutForm">
+        <input type="hidden"
+               name="${_csrf.parameterName}"
+               value="${_csrf.token}" />
+    </form>
+
+    <script>
+        function formSubmit() {
+            document.getElementById("logoutForm").submit();
+        }
+    </script>
+
+    <a href="javascript:formSubmit()">Close admin session</a>
 </div>
 <hr>
 <br>

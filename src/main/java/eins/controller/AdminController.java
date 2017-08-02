@@ -1,4 +1,3 @@
-/*
 package eins.controller;
 
 import eins.entity.User;
@@ -10,16 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
-//    @GetMapping("/logout")
-//    public String logout() {
-//
-//        return "redirect:/user/logout";
-//    }
 
     @GetMapping("/adminPage")
     public String adminPage(){
@@ -29,9 +24,19 @@ public class AdminController {
 
 
 
-    ////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
 
+    /*@RequestMapping(value = "/admin**", method = RequestMethod.GET)
+    public ModelAndView adminPage() {
 
+        ModelAndView model = new ModelAndView();
+        model.addObject("title", "Spring Security Custom Login Form");
+        model.addObject("message", "This is protected page!");
+        model.setViewName("admin");
+
+        return model;
+
+    }*/
 
     ////////////////////////////////////////////////////////////////////////
 
@@ -43,4 +48,4 @@ public class AdminController {
     @Autowired
     private DbService dbService;
 
-}*/
+}

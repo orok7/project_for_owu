@@ -43,11 +43,15 @@
              style="height: 103px;">
 
             <div style="width: 96%;height: 46%;/*margin: 2%*/">
-                <button id='login_btn' class="btn btn-success btn-block">Вхід</button>
+                <a href="/user/loginPage" style="text-decoration: none">
+                    <button class="btn btn-success btn-block">Вхід</button>
+                </a>
             </div>
 
             <div style="width: 96%;height: 46%;/*margin: 2%*/">
-                <button id='reg_btn' class="btn btn-success btn-block">Реєстрація</button>
+                <a href="/user/registrationPage" style="text-decoration: none">
+                    <button class="btn btn-success btn-block">Реєстрація</button>
+                </a>
             </div>
 
         </div>

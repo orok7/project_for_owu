@@ -1,5 +1,6 @@
 package eins.controller;
 
+import eins.entity.CompanyUser;
 import eins.entity.User;
 import eins.service.interfaces.DbService;
 import eins.service.interfaces.MailService;
@@ -8,6 +9,7 @@ import eins.service.valid.UserLoginValidator;
 import eins.service.valid.UserPassRecValidator;
 import eins.service.valid.UserRegValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,24 +29,72 @@ import java.util.function.Supplier;
 @RequestMapping("/user")
 public class UserController {
 
-    @PostMapping("/regCompanyUser")
-    public String regCompanyUser(@RequestParam String urCOwnership,
-                                 @RequestParam String urCFullName,
-                                 @RequestParam String urCShortName,
-                                 @RequestParam String urCCode,
-                                 @RequestParam String urCContactName,
-                                 @RequestParam String urCContactSurname,
-                                 @ModelAttribute("regUser") @Validated User user,
-                                 BindingResult result, Model model) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("regModDisplay", "block");
-            return "index";
+    @GetMapping(value = "/login")
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        @RequestParam(value = "logout", required = false) String logout,
+                        Model model) {
+
+        if (error != null) {
+            model.addAttribute("error", "Не вірне ім'я та пароль.");
         }
 
-        /*uService.save(user.getLogin(), user.getPassword(), urCOwnership,
-                urCFullName, urCShortName, urCCode,
-                urCContactName, urCContactSurname);*/
+        if (logout != null) {
+            model.addAttribute("msg", "Для входу в систему введіть Ваш логін та пароль.");
+        }
+
+        return "loginPage";
+
+    }
+
+    @PostMapping(value = "/loginOk")
+    public String loginOk(){
+        return "redirect:/main/index";
+    }
+
+    @PostMapping(value = "/logout")
+    public String logout(){
+        return "redirect:/login?logout";
+    }
+
+
+    @GetMapping("/loginPage")
+    public String loginPage(Model model) {
+        return "loginPage";
+    }
+
+    @GetMapping("/registrationPage")
+    public String registrationPage(Model model) {
+        return "registrationPage";
+    }
+
+
+
+
+
+
+
+    @PostMapping("/regCompanyUser")
+    public String regCompanyUser(@RequestParam String urOwnership,
+                                 @RequestParam String urFullName,
+                                 @RequestParam String urShortName,
+                                 @RequestParam String urCode,
+                                 @RequestParam String urName,
+                                 @RequestParam String urSurname,
+                                 @RequestParam String urUsername,
+                                 @RequestParam String urEmail,
+                                 @RequestParam String urPassword) {
+
+        User user = new User();
+        user.setUsername(urUsername);
+        user.setPassword(passwordEncoder.encode(urPassword));
+        user.setName(urName);
+        user.setSurname(urSurname);
+        user.setEmail(urEmail);
+
+        CompanyUser cUser = new CompanyUser(0, urOwnership, urFullName, urShortName, urCode);
+
+        uService.save(user, cUser);
 
         return "index";
     }
@@ -52,45 +102,22 @@ public class UserController {
 
 
     @PostMapping("/regIndividualUser")
-    public String regIndividualUser(@RequestParam String urIName,
-                                    @RequestParam String urISurname,
-                                    @ModelAttribute("regUser") @Validated User user,
-                                    BindingResult result, Model model) {
+    public String regIndividualUser(@RequestParam String urName,
+                                    @RequestParam String urSurname,
+                                    @RequestParam String urUsername,
+                                    @RequestParam String urEmail,
+                                    @RequestParam String urPassword) {
 
-        if (result.hasErrors()) {
-            model.addAttribute("regModDisplay", "block");
-            return "index";
-        }
-
-//        uService.save(user.getLogin(), user.getPassword(), urIName, urISurname);
-
-        return "index";
-    }
-
-
-
-    @PostMapping("/login")
-    public String login(@ModelAttribute("loggedUser") @Validated User user,
-                        BindingResult result, Model model, HttpServletResponse res) {
-        if (result.hasErrors()) {
-            model.addAttribute("loginingModDisplay", "block");
-            return "index";
-        }
-
-        /*User fUser = uService.findByLogin(user.getLogin());
-        Cookie cookie = new Cookie("loggedUserId", String.valueOf(fUser.getId()));
-        cookie.setPath("/");
-        cookie.setMaxAge(60*60*24*7);
-        res.addCookie(cookie);*/
-
-       /* if (fUser.getLogin().equalsIgnoreCase("admin@admin")) {
-            return "redirect:/admin/adminPage";
-        }*/
+        User user = new User();
+        user.setUsername(urUsername);
+        user.setPassword(passwordEncoder.encode(urPassword));
+        user.setName(urName);
+        user.setSurname(urSurname);
+        user.setEmail(urEmail);
+        uService.save(user);
 
         return "index";
     }
-
-
 
     @PostMapping("/passrecovery")
     public String passrecovery(@ModelAttribute("passrecUser") @Validated User user,
@@ -119,42 +146,6 @@ public class UserController {
     }
 
 
-
-    @GetMapping("/logout")
-    public String logout(HttpServletResponse res) {
-        Cookie cookie = new Cookie("loggedUserId", "-1");
-        cookie.setPath("/");
-        cookie.setMaxAge(60*60*24*7);
-        res.addCookie(cookie);
-        return "redirect:/init/index";
-    }
-
-
-    //////////////////////////////////////////////////////////////////////////
-
-
-
-    @InitBinder("passrecUser")
-    public void pruBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(uprValidator);
-    }
-
-
-
-    @InitBinder("regUser")
-    public void ruBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(urValidator);
-    }
-
-
-
-    @InitBinder("loggedUser")
-    public void luBinder(WebDataBinder webDataBinder) {
-        webDataBinder.addValidators(ulValidator);
-    }
-
-
-
     //////////////////////////////////////////////////////////////////////////////
 
 
@@ -169,6 +160,8 @@ public class UserController {
     private UserRegValidator urValidator;
     @Autowired
     MailService mailService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
 
@@ -187,26 +180,5 @@ public class UserController {
             pass += ch;
         }
         return pass;
-    }
-
-
-
-    @ModelAttribute("loggedUser")
-    public User loggedUser() {
-        return new User();
-    }
-
-
-
-    @ModelAttribute("passrecUser")
-    public User passrecUser() {
-        return new User();
-    }
-
-
-
-    @ModelAttribute("regUser")
-    public User regUser() {
-        return new User();
     }
 }

@@ -5,6 +5,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -34,10 +35,7 @@ public class User implements UserDetails {
     @CreationTimestamp
     private Timestamp dateOfRegistration;
 
-    @UpdateTimestamp
-    private Timestamp createTempPassword;
-    private String tempPassword;
-
+    private String email;
     private String name;
     private String surname;
 
@@ -52,7 +50,6 @@ public class User implements UserDetails {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.MERGE)
     private List<Reviews> reviews = new ArrayList<>();
-
 
 
     ///////////////////////////////////////////////////////////////////////////
@@ -140,14 +137,6 @@ public class User implements UserDetails {
         this.enabled = enabled;
     }
 
-    public String getTempPassword() {
-        return tempPassword;
-    }
-
-    public void setTempPassword(String tempPassword) {
-        this.tempPassword = tempPassword;
-    }
-
     public int getDiscount() {
         return discount;
     }
@@ -170,14 +159,6 @@ public class User implements UserDetails {
 
     public void setDateOfRegistration(Timestamp dateOfRegistration) {
         this.dateOfRegistration = dateOfRegistration;
-    }
-
-    public Timestamp getCreateTempPassword() {
-        return createTempPassword;
-    }
-
-    public void setCreateTempPassword(Timestamp createTempPassword) {
-        this.createTempPassword = createTempPassword;
     }
 
     public CompanyUser getCompanyDate() {
@@ -228,18 +209,33 @@ public class User implements UserDetails {
         this.reviews = reviews;
     }
 
-    public User (String email, String password, boolean isCompany,
-                 CompanyUser companyUser){
+    public User(String email, String password, boolean isCompany,
+                CompanyUser companyUser) {
         username = email;
         this.password = password;
         this.isCompany = isCompany;
         companyDate = companyUser;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public User() {
     }
 
-    public User(String username, String password, Role role, boolean accountNonExpired, boolean accountNonLocked, boolean credentialsNonExpired, boolean enabled, int discount, boolean isCompany, Timestamp dateOfRegistration, Timestamp createTempPassword, String tempPassword, String name, String surname, CompanyUser companyDate, List<Invoice> invoices) {
+    public User(String username, String password,
+                Role role, boolean accountNonExpired, boolean accountNonLocked,
+                boolean credentialsNonExpired, boolean enabled,
+                int discount, boolean isCompany, Timestamp dateOfRegistration,
+                String email, String name, String surname,
+                CompanyUser companyDate, List<Invoice> invoices,
+                List<Rating> ratings, List<Reviews> reviews) {
+
         this.username = username;
         this.password = password;
         this.role = role;
@@ -250,12 +246,13 @@ public class User implements UserDetails {
         this.discount = discount;
         this.isCompany = isCompany;
         this.dateOfRegistration = dateOfRegistration;
-        this.createTempPassword = createTempPassword;
-        this.tempPassword = tempPassword;
+        this.email = email;
         this.name = name;
         this.surname = surname;
         this.companyDate = companyDate;
         this.invoices = invoices;
+        this.ratings = ratings;
+        this.reviews = reviews;
     }
 
     ///////////////////////////////////////////////////////////////////////////
