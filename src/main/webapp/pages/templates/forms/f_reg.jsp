@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="/css/modal_registration.css">
 
 
-<form id="formReg" class="form-horizontal" action="/user/regIndividualUser" method="post">
+<form id="formReg" class="form-horizontal" onsubmit="return submitRegForm()" action="/user/regIndividualUser" method="post">
 
     <div class="col-sm-offset-2 checkbox">
         <label><input type="checkbox" id="urIsCompany">
@@ -71,7 +71,7 @@
     <div class="form-group">
         <label class="control-label col-sm-4" for="urEmail">Email:</label>
         <div class="col-sm-7">
-            <input type="email" class="form-control uData" id="urEmail" name="urEmail" placeholder="Введіть Ваш Email" required>
+            <input type="text" class="form-control uData" id="urEmail" name="urEmail" placeholder="Введіть Ваш Email" required>
         </div>
     </div>
 
@@ -96,9 +96,13 @@
     </div>
     <br>
 
+    <div id="errorRegDiv" class="alert alert-danger" style="display: none">
+        <h4 id="errorRegMsg"></h4>
+    </div>
+
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-7">
-            <button id="submitReg" type="submit" class="btn btn-success btn-block">Зареєструвати</button>
+                <button id="submitReg" type="submit" class="btn btn-success btn-block">Зареєструвати</button>
         </div>
     </div>
 
@@ -121,7 +125,6 @@
     var regIsCompany = document.getElementById('urIsCompany');
     var regCompanyData = document.getElementById("urCompanyData");
     regIsCompany.onclick = function () {
-        console.log("regIsCompany.onclick");
         if (regIsCompany.checked) {
             regCompanyData.style.display = "block";
             document.getElementById("formReg").action = "/user/regCompanyUser";
@@ -145,11 +148,59 @@
         submitReg.disabled = !isAccepted.checked;
     }
 
-    submitReg.onclick = function () {
-        console.log(document.getElementById('urIName').value);
-        console.log($('#urIName'));
-        console.log(document.getElementById('urPasswordAg').innerText);
-        if ($('#urPassword') == $('#urPasswordAg').text) console.log('==');;
+    $(function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+    });
 
+    function submitRegForm() {
+        var login = $('#urUsername').val();
+        var res = false;
+        console.log("login ", login);
+        console.log(login_validator(login));
+        if (login_validator(login)){
+            $.ajax({
+                url: "loginValidate",
+                type: 'POST',
+                data: {userLogin: login},
+                success: function (result) {
+                    if (result) {
+                        if (email_validator($('#urEmail').val())) {
+                            let pass = document.getElementById('urPassword').value;
+                            let passAg = document.getElementById('urPasswordAg').value;
+                            if (pass != null && pass === passAg) {
+                                res = true;
+                                document.forms["formReg"].submit();
+                            } else {
+                                document.getElementById('errorRegMsg').innerText = "Невірний пароль підтвердження";
+                                document.getElementById('errorRegDiv').style.display = 'block';
+                                res = false;
+                            }
+                        } else {
+                            document.getElementById('errorRegMsg').innerText = "Невірно вказаний Email";
+                            document.getElementById('errorRegDiv').style.display = 'block';
+                            res = false;
+                        }
+                    } else {
+                        document.getElementById('errorRegMsg').innerText = "Користувач з таким логіном вже існує";
+                        document.getElementById('errorRegDiv').style.display = 'block';
+                        res = false;
+                    }
+                },
+                error: function () {
+                    alert("error!!!");
+                }
+            });
+        } else {
+            document.getElementById('errorRegMsg').innerText = "Логін має починатися з букви і може містити" +
+                " тільки букви латинського алфавіту та цифри";
+            document.getElementById('errorRegDiv').style.display = 'block';
+            res = false;
+        }
+        return res;
     }
+
 </script>

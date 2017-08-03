@@ -13,5 +13,7 @@
 
 <%@include file="templates/main_parts/footer.jsp" %>
 
+<script src="/my_js/validators.js"></script>
+
 </body>
 </html>
