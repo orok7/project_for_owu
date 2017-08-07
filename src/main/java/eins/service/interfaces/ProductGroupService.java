@@ -8,6 +8,8 @@ public interface ProductGroupService {
 
     void save(ProductGroup o);
 
+    void remove(int id);
+
     ProductGroup findOne(int id);
 
     List<ProductGroup> findAll();

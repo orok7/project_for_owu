@@ -30,4 +30,9 @@ public class RatingServiceImpl implements RatingService {
     public List<Rating> findAll() {
         return dbDAO.findAll();
     }
+
+    @Override
+    public List<Rating> findAllByProductId(int id) {
+        return dbDAO.findAllByProductId(id);
+    }
 }

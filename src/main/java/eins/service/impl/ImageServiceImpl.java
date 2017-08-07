@@ -30,4 +30,9 @@ public class ImageServiceImpl implements ImageService {
     public List<Image> findAll() {
         return dbDAO.findAll();
     }
+
+    @Override
+    public List<Image> findAllByProductId(int id) {
+        return dbDAO.findAllByProductId(id);
+    }
 }

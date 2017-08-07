@@ -12,4 +12,6 @@ public interface RatingService {
 
     List<Rating> findAll();
 
+    List<Rating> findAllByProductId(int id);
+
 }

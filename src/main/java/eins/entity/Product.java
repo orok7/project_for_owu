@@ -28,8 +28,9 @@ public class Product {
 
     private double price;
     private String description;
+    private String mainPicture;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.MERGE)
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.MERGE)

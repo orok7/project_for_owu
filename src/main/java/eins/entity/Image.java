@@ -16,4 +16,7 @@ public class Image {
     private int id;
     private String picture;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    private Product product;
+
 }

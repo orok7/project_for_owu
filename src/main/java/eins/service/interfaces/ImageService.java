@@ -12,4 +12,6 @@ public interface ImageService {
 
     List<Image> findAll();
 
+    List<Image> findAllByProductId(int id);
+
 }

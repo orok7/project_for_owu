@@ -32,7 +32,9 @@
             <hr style="margin-bottom: 0">
             <button id="pasreg_btn" type="button" class="btn btn-link fleft" style="margin-right: 10px">Забули пароль?
             </button>
-            <button id="regFL_btn" type="button" class="btn btn-link fright">Зареєструватися</button>
+            <a href="/user/registrationPage">
+                <button id="regFL_btn" type="button" class="btn btn-link fright">Зареєструватися</button>
+            </a>
         </div>
     </div>
 

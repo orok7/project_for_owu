@@ -10,6 +10,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
+import java.io.File;
 import java.util.Properties;
 
 @Configuration
@@ -30,6 +31,9 @@ public class WebConfig extends WebMvcConfigurerAdapter{
         registry
                 .addResourceHandler("/img/**")
                 .addResourceLocations("/pages/img/");
+        registry
+                .addResourceHandler("/imgdb/**")
+                .addResourceLocations("file:"+System.getProperty("user.home") + File.separator + "images" + File.separator);
         registry
                 .addResourceHandler("/css/**")
                 .addResourceLocations("/static/styles/");

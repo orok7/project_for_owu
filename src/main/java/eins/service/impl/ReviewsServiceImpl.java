@@ -30,4 +30,9 @@ public class ReviewsServiceImpl implements ReviewsService {
     public List<Reviews> findAll() {
         return dbDAO.findAll();
     }
+
+    @Override
+    public List<Reviews> findAllByProductId(int id) {
+        return dbDAO.findAllByProductId(id);
+    }
 }
