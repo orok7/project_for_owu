@@ -19,4 +19,6 @@ public interface ProductService {
 
     Product findOneWithGroup(int id);
 
+    List<Product> findAllByProductGroupName(String name);
+
 }

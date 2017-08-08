@@ -30,7 +30,7 @@
     </div>
 
     <div class="mycart col-md-1">
-        <a href="" style="display: block; width: 100%; height: 100%" title="Корзина"></a>
+        <a href="/cart" style="display: block; width: 100%; height: 100%" title="Корзина"></a>
     </div>
 
     <div class="col-md-2">

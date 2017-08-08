@@ -1,6 +1,8 @@
 package eins.controller;
 
+import eins.entity.Product;
 import eins.entity.User;
+import eins.service.interfaces.ProductService;
 import eins.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,20 +10,33 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/main")
 public class RedirectController {
 
     @GetMapping("/index")
-    public String index(){ return "index"; }
+    public String index(@RequestParam(required = false) String pgName,
+            Model model){
+
+        List<Product> productList;
+
+        if (pgName == null || pgName.isEmpty())
+            productList = pService.findAll();
+        else productList = pService.findAllByProductGroupName(pgName);
+
+        model.addAttribute("productList", productList);
+        return "index";
+    }
 
     ///////////////////////////////////////////////////////////////////
 
 
 
     @Autowired
-    private UserService uService;
+    private ProductService pService;
 
 
 

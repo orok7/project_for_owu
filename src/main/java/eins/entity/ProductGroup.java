@@ -1,9 +1,6 @@
 package eins.entity;
 
 import lombok.*;
-
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 
 @Getter
@@ -17,7 +14,11 @@ public class ProductGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true)
     private String name;
+/*
+    @ManyToOne(fetch = FetchType.LAZY)
+    private ProductGroup parent;
 
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+    private List<ProductGroup> subGroups = new ArrayList<>();*/
 }

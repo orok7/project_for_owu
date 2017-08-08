@@ -96,7 +96,7 @@ public class UserController {
 
         uService.save(user, cUser);
 
-        return "index";
+        return "redirect:/user/login";
     }
 
 
@@ -116,7 +116,7 @@ public class UserController {
         user.setEmail(urEmail);
         uService.save(user);
 
-        return "index";
+        return "redirect:/user/login";
     }
 
     @PostMapping("/passrecovery")

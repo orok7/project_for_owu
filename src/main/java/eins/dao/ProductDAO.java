@@ -15,4 +15,6 @@ public interface ProductDAO extends JpaRepository<Product,Integer> {
     @Query("select p from Product p left outer join fetch p.productGroup where p.id=:id")
     Product findOneWithGroup(@Param("id") int id);
 
+    List<Product> findAllByProductGroupName(String name);
+
 }

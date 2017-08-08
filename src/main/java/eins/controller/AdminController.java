@@ -44,11 +44,11 @@ public class AdminController {
         product.setPrice(Double.valueOf(priceProduct));
         product.setDescription(descriptionProduct);
 
-        String fileName = "" + (picture.getOriginalFilename() + articleProduct).hashCode()
-                + picture.getOriginalFilename().substring(picture.getOriginalFilename().lastIndexOf("."));
-
-        if (id==0 || !product.getMainPicture().equals("/imgdb/" + fileName)){
-            if (!picture.getOriginalFilename().isEmpty()) {
+        String originalFilename = picture.getOriginalFilename();
+        if (!originalFilename.isEmpty()) {
+            String fileName = "" + (originalFilename + articleProduct).hashCode()
+                    + originalFilename.substring(originalFilename.lastIndexOf("."));
+            if (id == 0 || !product.getMainPicture().equals("/imgdb/" + fileName)) {
                 String realpath = System.getProperty("user.home") + File.separator + "images" + File.separator;
                 picture.transferTo(new File(realpath + fileName));
                 product.setMainPicture("/imgdb/" + fileName);

@@ -3,15 +3,6 @@
 <link rel="stylesheet" href="/css/block.css">
 
 <div class="content contentbg mrg-b15 fright border mrg-l10">
-    <p class="content-title">${contentTitle}</p>
-    <div class="table-div">
-        <c:forEach items="${list}" var="elem">
-            <div class="block">
-                <p>${elem}</p>
-            </div>
-        </c:forEach>
-    </div>
-
     <div class="conteiner">
         <sec:authorize access="isAuthenticated()">
             <h1>Welcome ${pageContext.request.userPrincipal.name}!!!</h1>
@@ -30,13 +21,43 @@
 
     </div>
 
-    <div class="page-select">
-        <c:if test="${pageNum > 1}">
-        <a href="/toFirstPage" title="На початок"><<&nbsp;&nbsp;</a>
-        <a href="/prevPage" title="Назад"><-&nbsp;&nbsp;</a></c:if>
-        &nbsp;&nbsp;${pageNum}&nbsp;&nbsp;
-        <c:if test="${!lastPage}">
-        <a href="/nextPage" title="Вперід">&nbsp;&nbsp;-></a>
-        <a href="/toLastPage" title="В кінець">&nbsp;&nbsp;>></a></c:if>
+    <p class="content-title">${contentTitle}</p>
+    <div class="table-div">
+        <c:forEach items="${productList}" var="elem">
+            <div class="block">
+                <img src="${elem.mainPicture}" class="img-thumbnail" alt="">
+                <p>${elem.description}</p>
+                <h4 style="color: red">Ціна: ${elem.price} грн.</h4>
+                <form action="" onsubmit="return add(${elem.id})" class="form-inline">
+                    <input id="numToCart${elem.id}" class="form-control" style="width: 62px;margin-left: 5px" type="number" value="1">
+                    <button id="addToCart${elem.id}" class="btn btn-success" style="width: 123px;" type="submit">Додати у корзину</button>
+                </form>
+            </div>
+        </c:forEach>
     </div>
+
 </div>
+
+<script>
+    function add(id) {
+
+        let num = document.getElementById('numToCart'+id).value;
+        let name = "prodid_";
+        document.cookie = name + id + "="+num+"; path=/; expires=0";//+ date.toUTCString();
+
+        return false;
+    }
+
+    function getAllToCart() {
+        const regex = /(?:^|; )prodid_([^;]*)/g;
+        let cookie = document.cookie;
+        let m;
+        console.log(cookie);
+        while ((m = regex.exec(cookie)) !== null) {
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+            console.log(m[1]);
+        }
+    }
+</script>

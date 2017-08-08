@@ -45,4 +45,9 @@ public class ProductServiceImpl implements ProductService {
     public Product findOneWithGroup(int id) {
         return dbDAO.findOneWithGroup(id);
     }
+
+    @Override
+    public List<Product> findAllByProductGroupName(String name) {
+        return dbDAO.findAllByProductGroupName(name);
+    }
 }
