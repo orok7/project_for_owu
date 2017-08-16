@@ -19,12 +19,16 @@ public class RedirectController {
 
     @GetMapping("/index")
     public String index(@RequestParam(required = false) String pgName,
-            Model model){
+                        @RequestParam(required = false) String searchThis,
+                        Model model){
 
         List<Product> productList;
 
-        if (pgName == null || pgName.isEmpty())
-            productList = pService.findAll();
+        if (pgName == null || pgName.isEmpty()){
+            if (searchThis == null || searchThis.isEmpty()) {
+                productList = pService.findAll();
+            } else productList = pService.findAllBySearch("%"+searchThis+"%");
+        }
         else productList = pService.findAllByProductGroupName(pgName);
 
         model.addAttribute("productList", productList);

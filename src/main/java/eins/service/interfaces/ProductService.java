@@ -21,4 +21,6 @@ public interface ProductService {
 
     List<Product> findAllByProductGroupName(String name);
 
+    List<Product> findAllBySearch(String searchThis);
+
 }

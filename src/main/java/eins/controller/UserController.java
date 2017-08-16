@@ -1,25 +1,21 @@
 package eins.controller;
 
 import eins.entity.CompanyUser;
+import eins.entity.Invoice;
+import eins.entity.Review;
 import eins.entity.User;
-import eins.service.interfaces.DbService;
-import eins.service.interfaces.MailService;
+import eins.service.interfaces.InvoiceService;
+import eins.service.interfaces.ReviewService;
 import eins.service.interfaces.UserService;
-import eins.service.valid.UserLoginValidator;
-import eins.service.valid.UserPassRecValidator;
-import eins.service.valid.UserRegValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,6 +24,109 @@ import java.util.function.Supplier;
 @Controller
 @RequestMapping("/user")
 public class UserController {
+
+    //TODO change password
+    //TODO recovery password
+
+    @PostMapping("/userPage/savePersonal")
+    public String savePersonal(@RequestParam String urId,
+                               @RequestParam(required = false) String urOwnership,
+                               @RequestParam(required = false) String urFullName,
+                               @RequestParam(required = false) String urShortName,
+                               @RequestParam(required = false) String urCode,
+                               @RequestParam String urName,
+                               @RequestParam String urSurname,
+                               @RequestParam String urPhoneNumber,
+                               @RequestParam String urEmail){
+
+        int id = 0;
+        try { id = Integer.valueOf(urId); } catch (NumberFormatException e) { }
+        User user = uService.findOneWithCompanyData(id);
+        if (user == null) return "redirect:/user/userPage/main";
+
+        user.setName(urName);
+        user.setSurname(urSurname);
+        user.setPhoneNumber(urPhoneNumber);
+        user.setEmail(urEmail);
+
+        if (!user.isCompany()) {
+            uService.save(user);
+            return "redirect:/user/userPage/main";
+        }
+
+        CompanyUser cUser = user.getCompanyDate();
+        cUser.setOwnership(urOwnership);
+        cUser.setFullName(urFullName);
+        cUser.setShortName(urShortName);
+        cUser.setCode(urCode);
+
+        uService.save(user, cUser);
+
+        return "redirect:/user/userPage/main";
+    }
+
+    @GetMapping("/userPage/personal")
+    public String userPagePersonal(Model model, Principal principal) {
+        if (principal == null) return "redirect:/";
+        model.addAttribute("upPersonalShow","block");
+        model.addAttribute("upInvoiceShow","none");
+        model.addAttribute("upReviewShow","none");
+        model.addAttribute("upRatingShow","none");
+        model.addAttribute("userPagePersonal","active");
+        model.addAttribute("loggedUser", uService.findOneWithCompanyData(uService.findByUsername(principal.getName()).getId()));
+        return "userPage";
+    }
+
+    @GetMapping({"/userPage/main", "/userPage/invoice"})
+    public String userPageInvoice(Model model, Principal principal) {
+        if (principal == null) return "redirect:/";
+        User user = uService.findOneWithCompanyData(uService.findByUsername(principal.getName()).getId());
+        model.addAttribute("upPersonalShow","none");
+        model.addAttribute("upInvoiceShow","block");
+        model.addAttribute("upReviewShow","none");
+        model.addAttribute("upRatingShow","none");
+        model.addAttribute("userPageInvoice","active");
+        model.addAttribute("listInvoice", invService.findAllByBuyerId(user.getId()));
+        model.addAttribute("loggedUser", user);
+        return "userPage";
+    }
+
+    @GetMapping("/userPage/review")
+    public String userPageReview(Model model, Principal principal) {
+        if (principal == null) return "redirect:/";
+        model.addAttribute("upPersonalShow","none");
+        model.addAttribute("upInvoiceShow","none");
+        model.addAttribute("upReviewShow","block");
+        model.addAttribute("upRatingShow","none");
+        model.addAttribute("userPageReview","active");
+        List<Review> reviews = reviewService.findAllByUserUsername(principal.getName());
+        System.out.println(reviews);
+        model.addAttribute("reviews", reviews);
+        model.addAttribute("loggedUser", uService.findOneWithCompanyData(uService.findByUsername(principal.getName()).getId()));
+        return "userPage";
+    }
+
+    @GetMapping("/userPage/rating")
+    public String userPageRating(Model model, Principal principal) {
+        if (principal == null) return "redirect:/";
+        model.addAttribute("upPersonalShow","none");
+        model.addAttribute("upInvoiceShow","none");
+        model.addAttribute("upReviewShow","none");
+        model.addAttribute("upRatingShow","block");
+        model.addAttribute("userPageRating","active");
+        model.addAttribute("loggedUser", uService.findOneWithCompanyData(uService.findByUsername(principal.getName()).getId()));
+        return "userPage";
+    }
+
+
+    @GetMapping("/userPage/detailsInvoice{id}")
+    public String detailsInvoice(@PathVariable("id") int id,
+                                 Model model) {
+        Invoice invoice = invService.findOneWithProducts(id);
+        model.addAttribute("invoiceProducts", invoice.getProducts());
+        model.addAttribute("invoiceSum", invoice.getSum());
+        return "userInvoiceDetails";
+    }
 
 
     @GetMapping(value = "/login")
@@ -59,18 +158,15 @@ public class UserController {
 
 
     @GetMapping("/loginPage")
-    public String loginPage(Model model) {
+    public String loginPage() {
         return "loginPage";
     }
+
 
     @GetMapping("/registrationPage")
     public String registrationPage(Model model) {
         return "registrationPage";
     }
-
-
-
-
 
 
 
@@ -81,15 +177,18 @@ public class UserController {
                                  @RequestParam String urCode,
                                  @RequestParam String urName,
                                  @RequestParam String urSurname,
+                                 @RequestParam String urPhoneNumber,
                                  @RequestParam String urUsername,
                                  @RequestParam String urEmail,
                                  @RequestParam String urPassword) {
 
         User user = new User();
+
         user.setUsername(urUsername);
         user.setPassword(passwordEncoder.encode(urPassword));
         user.setName(urName);
         user.setSurname(urSurname);
+        user.setPhoneNumber(urPhoneNumber);
         user.setEmail(urEmail);
 
         CompanyUser cUser = new CompanyUser(0, urOwnership, urFullName, urShortName, urCode);
@@ -104,6 +203,7 @@ public class UserController {
     @PostMapping("/regIndividualUser")
     public String regIndividualUser(@RequestParam String urName,
                                     @RequestParam String urSurname,
+                                    @RequestParam String urPhoneNumber,
                                     @RequestParam String urUsername,
                                     @RequestParam String urEmail,
                                     @RequestParam String urPassword) {
@@ -113,11 +213,14 @@ public class UserController {
         user.setPassword(passwordEncoder.encode(urPassword));
         user.setName(urName);
         user.setSurname(urSurname);
+        user.setPhoneNumber(urPhoneNumber);
         user.setEmail(urEmail);
         uService.save(user);
 
         return "redirect:/user/login";
     }
+
+
 
     @PostMapping("/passrecovery")
     public String passrecovery(@ModelAttribute("passrecUser") @Validated User user,
@@ -153,13 +256,9 @@ public class UserController {
     @Autowired
     private UserService uService;
     @Autowired
-    private UserLoginValidator ulValidator;
+    private InvoiceService invService;
     @Autowired
-    private UserPassRecValidator uprValidator;
-    @Autowired
-    private UserRegValidator urValidator;
-    @Autowired
-    MailService mailService;
+    private ReviewService reviewService;
     @Autowired
     PasswordEncoder passwordEncoder;
 

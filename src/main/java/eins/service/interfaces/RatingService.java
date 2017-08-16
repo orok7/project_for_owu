@@ -1,3 +1,4 @@
+/*
 package eins.service.interfaces;
 
 import eins.entity.Rating;
@@ -15,3 +16,4 @@ public interface RatingService {
     List<Rating> findAllByProductId(int id);
 
 }
+*/

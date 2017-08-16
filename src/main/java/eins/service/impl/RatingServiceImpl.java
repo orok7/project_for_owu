@@ -1,3 +1,4 @@
+/*
 package eins.service.impl;
 
 import eins.dao.RatingDAO;
@@ -35,4 +36,4 @@ public class RatingServiceImpl implements RatingService {
     public List<Rating> findAllByProductId(int id) {
         return dbDAO.findAllByProductId(id);
     }
-}
+}*/

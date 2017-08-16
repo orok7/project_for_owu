@@ -25,12 +25,9 @@
             <span class="caret"></span></button>
         <ul class="dropdown-menu">
             <li><a href="/admin/listUser">User</a></li>
-            <%--<li><a href="/admin/listImage">Image</a></li>--%>
             <li><a href="/admin/listInvoice">Invoice</a></li>
             <li><a href="/admin/listProduct">Product</a></li>
             <li><a href="/admin/listProductGroup">Product Group</a></li>
-            <%--<li><a href="/admin/listRating">Rating</a></li>--%>
-            <%--<li><a href="/admin/listReviews">Reviews</a></li>--%>
         </ul>
     </div>
 </div>

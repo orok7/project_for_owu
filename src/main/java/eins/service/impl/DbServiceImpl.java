@@ -52,8 +52,7 @@ public class DbServiceImpl implements DbService {
     @Autowired private ProductGroupDAO productGroupDAO;
     @Autowired private ProductDAO productDAO;
     @Autowired private ProductToBuyDAO productToBuyDAO;
-    @Autowired private RatingDAO ratingDAO;
-    @Autowired private ReviewsDAO reviewsDAO;
+    @Autowired private ReviewDAO reviewDAO;
     @Autowired private UserDAO uDAO;
 
     private Map<Class<?>, JpaRepository> dbDAO = new HashMap<>();
@@ -65,8 +64,7 @@ public class DbServiceImpl implements DbService {
         dbDAO.put(ProductGroup.class, productGroupDAO);
         dbDAO.put(Product.class, productDAO);
         dbDAO.put(ProductToBuy.class, productToBuyDAO);
-        dbDAO.put(Rating.class, ratingDAO);
-        dbDAO.put(Reviews.class, reviewsDAO);
+        dbDAO.put(Review.class, reviewDAO);
         dbDAO.put(User.class, uDAO);
     }
 }

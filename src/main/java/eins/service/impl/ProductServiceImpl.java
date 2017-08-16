@@ -50,4 +50,9 @@ public class ProductServiceImpl implements ProductService {
     public List<Product> findAllByProductGroupName(String name) {
         return dbDAO.findAllByProductGroupName(name);
     }
+
+    @Override
+    public List<Product> findAllBySearch(String searchThis) {
+        return dbDAO.findAllBySearch(searchThis);
+    }
 }

@@ -1,4 +1,4 @@
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%--<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>--%>
 <%@include file="templates/main_parts/head.jsp" %>
 
 <%@include file="templates/main_parts/header.jsp" %>

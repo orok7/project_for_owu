@@ -1,3 +1,4 @@
+/*
 package eins.dao;
 
 import eins.entity.Rating;
@@ -9,4 +10,4 @@ public interface RatingDAO extends JpaRepository<Rating,Integer> {
 
     List<Rating> findAllByProductId(int id);
 
-}
+}*/

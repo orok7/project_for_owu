@@ -62,6 +62,13 @@
     </div>
 
     <div class="form-group">
+        <label class="control-label col-sm-4" for="urIPhoneNumber">Номер телефону:</label>
+        <div class="col-sm-7">
+            <input class="form-control uData" id="urIPhoneNumber" type="text" name="urPhoneNumber" placeholder="+3800011122233" required>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="control-label col-sm-4" for="urUsername">Логін:</label>
         <div class="col-sm-7">
             <input type="text" class="form-control uData" id="urUsername" name="urUsername" placeholder="Введіть Ваш Логін" required>

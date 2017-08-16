@@ -1,3 +1,4 @@
+/*
 package eins.entity;
 
 import lombok.*;
@@ -22,3 +23,4 @@ public class Rating {
 
     private double rating;
 }
+*/

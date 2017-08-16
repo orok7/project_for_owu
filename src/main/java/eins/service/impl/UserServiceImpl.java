@@ -27,6 +27,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public void remove(int id) {
+        uDAO.delete(id);
+    }
+
+    @Override
     public void save(User user, CompanyUser companyUser) {
         cuDAO.save(companyUser);
         user.setCompany(true);
@@ -37,6 +42,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findOne(int id) {
         return uDAO.findOne(id);
+    }
+
+    @Override
+    public User findOneWithCompanyData(int id) {
+        return uDAO.findOneWithCompanyData(id);
     }
 
     @Override

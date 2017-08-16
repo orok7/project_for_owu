@@ -1,3 +1,4 @@
+/*
 package eins.entity;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -12,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-public class User implements UserDetails {
+public class UserBackup implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -206,8 +207,8 @@ public class User implements UserDetails {
         this.reviews = reviews;
     }
 
-    public User(String email, String password, boolean isCompany,
-                CompanyUser companyUser) {
+    public UserBackup(String email, String password, boolean isCompany,
+                      CompanyUser companyUser) {
         username = email;
         this.password = password;
         this.isCompany = isCompany;
@@ -222,16 +223,16 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public User() {
+    public UserBackup() {
     }
 
-    public User(String username, String password,
-                Role role, boolean accountNonExpired, boolean accountNonLocked,
-                boolean credentialsNonExpired, boolean enabled,
-                int discount, boolean isCompany, Timestamp dateOfRegistration,
-                String email, String name, String surname, String phoneNumber,
-                CompanyUser companyDate, List<Invoice> invoices,
-                List<Review> reviews) {
+    public UserBackup(String username, String password,
+                      Role role, boolean accountNonExpired, boolean accountNonLocked,
+                      boolean credentialsNonExpired, boolean enabled,
+                      int discount, boolean isCompany, Timestamp dateOfRegistration,
+                      String email, String name, String surname, String phoneNumber,
+                      CompanyUser companyDate, List<Invoice> invoices,
+                      List<Review> reviews) {
 
         this.username = username;
         this.password = password;
@@ -262,3 +263,4 @@ public class User implements UserDetails {
     }
 
 }
+*/

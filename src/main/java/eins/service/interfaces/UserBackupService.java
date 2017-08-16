@@ -1,15 +1,15 @@
+/*
 package eins.service.interfaces;
 
 import eins.entity.CompanyUser;
 import eins.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserBackupService extends UserDetailsService {
 
     void save(User user);
-
-    void remove(int id);
 
     void save(User user, CompanyUser companyUser);
 
@@ -21,3 +21,4 @@ public interface UserService extends UserDetailsService {
 
     List<User> findAll();
 }
+*/

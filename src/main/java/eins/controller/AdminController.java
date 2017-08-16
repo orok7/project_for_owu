@@ -63,12 +63,107 @@ public class AdminController {
         return "redirect:/admin/newProduct";
     }
 
+
+    @PostMapping("/saveUser")
+    public String savePersonal(@RequestParam String urId,
+                               @RequestParam(required = false) String urOwnership,
+                               @RequestParam(required = false) String urFullName,
+                               @RequestParam(required = false) String urShortName,
+                               @RequestParam(required = false) String urCode,
+                               @RequestParam String urName,
+                               @RequestParam String urSurname,
+                               @RequestParam String urPhoneNumber,
+                               @RequestParam String urEmail,
+                               @RequestParam String urDiscount,
+                               @RequestParam(required = false) String urAccountNonExpired,
+                               @RequestParam(required = false) String urAccountNonLocked,
+                               @RequestParam(required = false) String urCredentialsNonExpired,
+                               @RequestParam(required = false) String urEnabled){
+
+        User user = uService.findOneWithCompanyData(Integer.valueOf(urId));
+        if (user == null) return "redirect:/admin/listUser";
+
+        user.setName(urName);
+        user.setSurname(urSurname);
+        user.setPhoneNumber(urPhoneNumber);
+        user.setEmail(urEmail);
+        user.setDiscount(Integer.valueOf(urDiscount));
+        user.setAccountNonExpired(urAccountNonExpired != null);
+        user.setAccountNonLocked(urAccountNonLocked != null);
+        user.setCredentialsNonExpired(urCredentialsNonExpired != null);
+        user.setEnabled(urEnabled != null);
+
+        if (!user.isCompany()) {
+            uService.save(user);
+            return "redirect:/admin/listUser";
+        }
+
+        CompanyUser cUser = user.getCompanyDate();
+        cUser.setOwnership(urOwnership);
+        cUser.setFullName(urFullName);
+        cUser.setShortName(urShortName);
+        cUser.setCode(urCode);
+
+        uService.save(user, cUser);
+
+        return "redirect:/admin/listUser";
+    }
+
     @GetMapping("/listProduct")
     public String listProduct(Model model){
         List<Product> list = pService.findAllWithGroups();
         list.sort( (o1, o2) -> o1.getName().compareTo(o2.getName()));
         model.addAttribute("productList", list);
-        return "/productList";
+        return "productList";
+    }
+
+    @GetMapping("/listUser")
+    public String listUser(Model model){
+        List<User> list = uService.findAll();
+        list.sort( (o1, o2) -> o1.getUsername().compareTo(o2.getUsername()));
+        model.addAttribute("userList", list);
+        return "userList";
+    }
+
+    @GetMapping("/listInvoice")
+    public String listInvoice(Model model){
+        List<Invoice> list = invoiceService.findAllWithBuyer();
+        list.sort( (o1, o2) -> o1.getDate().compareTo(o2.getDate()));
+        model.addAttribute("paymentTypes", PaymentType.values());
+        model.addAttribute("invoiceStatus", InvoiceStatus.values());
+        model.addAttribute("listInvoice", list);
+        return "invoiceList";
+    }
+
+    @PostMapping("/saveInvoice{id}")
+    public String saveInvoice(@PathVariable("id") int id,
+                              @RequestParam String odPayed,
+                              @RequestParam String odInvoicePaymentTypes,
+                              @RequestParam String odInvoiceStatus) {
+
+        Invoice invoice = invoiceService.findOne(id);
+        invoice.setPayed(Double.valueOf(odPayed));
+        invoice.setPaymentType(PaymentType.valueOf(odInvoicePaymentTypes));
+        invoice.setStatus(InvoiceStatus.valueOf(odInvoiceStatus));
+        invoiceService.save(invoice);
+
+        return "redirect:/admin/listInvoice";
+    }
+
+    @GetMapping("/modifyInvoice{id}")
+    public String modifyInvoice(@PathVariable("id") int id,
+                                 Model model) {
+        Invoice invoice = invoiceService.findOneWithProducts(id);
+        model.addAttribute("invoiceProducts", invoice.getProducts());
+        model.addAttribute("invoiceSum", invoice.getSum());
+        return "invoiceDetails";
+    }
+
+    @GetMapping("/modifyUser{id}")
+    public String modifyUser(@PathVariable("id") int id, Model model){
+
+        model.addAttribute("user", uService.findOneWithCompanyData(id));
+        return "userDetails";
     }
 
     @GetMapping("/newProduct")
@@ -79,7 +174,7 @@ public class AdminController {
         if (errorAdminPage!=null)model.addAttribute("errorAdminPage", errorAdminPage);
         model.addAttribute("productGroups", productGroups);
         model.addAttribute("measurementUnits", MeasurementUnits.values());
-        return "/newProduct";
+        return "newProduct";
     }
 
     @GetMapping("/modifyProduct{id}")
@@ -100,7 +195,7 @@ public class AdminController {
         model.addAttribute("productPrice", product.getPrice());
         model.addAttribute("productDescription", product.getDescription());
         model.addAttribute("productMainPicture", product.getMainPicture());
-        return "/newProduct";
+        return "newProduct";
     }
 
     @GetMapping("/removeProduct{id}")
@@ -163,22 +258,10 @@ public class AdminController {
 
     @Autowired
     private UserService uService;
-
     @Autowired
     private ProductService pService;
-
-    @Autowired
-    private RatingService ratingService;
-
-    @Autowired
-    private ReviewsService reviewsService;
-
-    @Autowired
-    private ImageService imageService;
-
     @Autowired
     private InvoiceService invoiceService;
-
     @Autowired
     private ProductGroupService pgService;
 

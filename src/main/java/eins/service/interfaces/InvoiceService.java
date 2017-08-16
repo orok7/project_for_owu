@@ -12,4 +12,14 @@ public interface InvoiceService {
 
     List<Invoice> findAll();
 
+    List<Invoice> findAllByBuyerId(int id);
+
+    List<Invoice> findAllWithProductsByBuyerId(int id);
+
+    List<Invoice> findAllWithBuyer();
+
+    Invoice findOneWithProducts(int id);
+
+    List<Invoice> findAllWithProducts();
+
 }

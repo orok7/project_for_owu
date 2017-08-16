@@ -9,6 +9,10 @@ import java.util.List;
 
 public interface ProductDAO extends JpaRepository<Product,Integer> {
 
+//    SELECT * FROM product WHERE product.name LIKE '%австрія%' OR description LIKE '%австрія%';
+    @Query("select p from Product p where p.name like :searchThis or p.description like :searchThis")
+    List<Product> findAllBySearch(@Param("searchThis") String searchThis);
+
     @Query("select p from Product p left outer join fetch p.productGroup")
     List<Product> findAllWithGroups();
 

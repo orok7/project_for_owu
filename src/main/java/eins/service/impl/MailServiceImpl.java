@@ -36,4 +36,21 @@ public class MailServiceImpl implements MailService {
         javaMailSender.send(message);
 
     }
+
+    @Override
+    public void sendNewOrder(String email, String subject, String text) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        try {
+            helper.setFrom("orok.java@gmail.com");
+            helper.setTo(new InternetAddress(email));
+            helper.setSubject(subject);
+            helper.setText(text, true);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        javaMailSender.send(message);
+
+    }
 }

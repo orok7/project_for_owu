@@ -3,7 +3,7 @@ package eins.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +36,6 @@ public class Invoice {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-    private String delivery;
+//    private String delivery;
 
 }
