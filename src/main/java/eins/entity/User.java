@@ -33,7 +33,11 @@ public class User implements UserDetails {
 
     @CreationTimestamp
     private Timestamp dateOfRegistration;
+    private Timestamp timestampOfPassRec;
 
+    private String passRecCode;
+
+    @Column(unique = true)
     private String email;
     private String name;
     private String surname;
@@ -252,6 +256,21 @@ public class User implements UserDetails {
         this.reviews = reviews;
     }
 
+    public Timestamp getTimestampOfPassRec() {
+        return timestampOfPassRec;
+    }
+
+    public void setTimestampOfPassRec(Timestamp timestampOfPassRec) {
+        this.timestampOfPassRec = timestampOfPassRec;
+    }
+
+    public String getPassRecCode() {
+        return passRecCode;
+    }
+
+    public void setPassRecCode(String passRecCode) {
+        this.passRecCode = passRecCode;
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Special getter for spring forms

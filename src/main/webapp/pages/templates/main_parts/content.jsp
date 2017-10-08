@@ -3,23 +3,6 @@
 <link rel="stylesheet" href="/css/block.css">
 
 <div class="content contentbg mrg-b15 fright border mrg-l10">
-    <div class="conteiner">
-        <%--<sec:authorize access="isAuthenticated()">
-            <h1>Welcome ${pageContext.request.userPrincipal.name}!!!</h1>
-            <sec:authorize access="hasRole('ADMIN')">
-                <h4>
-                    <a href="/admin/adminPage">You can go to admin page...</a>
-                </h4>
-            </sec:authorize>
-            <form action="/user/logout" method="post" id="logoutForm">
-                <input type="submit" class="btn-link" value="logout...">
-                <input type="hidden"
-                       name="${_csrf.parameterName}"
-                       value="${_csrf.token}" />
-            </form>
-        </sec:authorize>--%>
-
-    </div>
 
     <p class="content-title">${contentTitle}</p>
     <div class="table-div">

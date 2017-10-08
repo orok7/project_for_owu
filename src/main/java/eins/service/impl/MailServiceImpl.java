@@ -17,18 +17,18 @@ public class MailServiceImpl implements MailService {
     private JavaMailSender javaMailSender;
 
     @Override
-    public void sendMailRecPass(String email, String pass, double min) {
+    public void sendMailRecPass(String email, String link, double min) {
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         try {
             helper.setFrom("orok.java@gmail.com");
             helper.setTo(new InternetAddress(email));
+            helper.setSubject("Password recovery");
             helper.setText("Hello dear user.<br>" +
                     "If you didn't request to recover your password, please ignore this message.<br>" +
-                    "Otherwise, your temporary password is " + pass + ", valid for " + min + " minutes.<br>" +
+                    "Otherwise, you can tap <a href=\""+link+"\">here</a> to set a new password."+
+                    "Please remember that this link is valid only " + min + " minutes.<br>" +
                     "Thank you for using our service!", true);
-
-
         } catch (MessagingException e) {
             e.printStackTrace();
         }

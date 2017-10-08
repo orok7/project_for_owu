@@ -13,4 +13,3 @@ function login_validator(login) {
     return ((regex.exec(login)) !== null);
 
 }
-

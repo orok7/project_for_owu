@@ -5,17 +5,18 @@ import eins.entity.Invoice;
 import eins.entity.Review;
 import eins.entity.User;
 import eins.service.interfaces.InvoiceService;
+import eins.service.interfaces.MailService;
 import eins.service.interfaces.ReviewService;
 import eins.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -25,6 +26,7 @@ import java.util.function.Supplier;
 @RequestMapping("/user")
 public class UserController {
 
+    //TODO REGISTRATION. Check email.
     //TODO change password
     //TODO recovery password
 
@@ -71,7 +73,7 @@ public class UserController {
         model.addAttribute("upPersonalShow","block");
         model.addAttribute("upInvoiceShow","none");
         model.addAttribute("upReviewShow","none");
-        model.addAttribute("upRatingShow","none");
+        model.addAttribute("upChangePassShow","none");
         model.addAttribute("userPagePersonal","active");
         model.addAttribute("loggedUser", uService.findOneWithCompanyData(uService.findByUsername(principal.getName()).getId()));
         return "userPage";
@@ -84,7 +86,7 @@ public class UserController {
         model.addAttribute("upPersonalShow","none");
         model.addAttribute("upInvoiceShow","block");
         model.addAttribute("upReviewShow","none");
-        model.addAttribute("upRatingShow","none");
+        model.addAttribute("upChangePassShow","none");
         model.addAttribute("userPageInvoice","active");
         model.addAttribute("listInvoice", invService.findAllByBuyerId(user.getId()));
         model.addAttribute("loggedUser", user);
@@ -97,7 +99,7 @@ public class UserController {
         model.addAttribute("upPersonalShow","none");
         model.addAttribute("upInvoiceShow","none");
         model.addAttribute("upReviewShow","block");
-        model.addAttribute("upRatingShow","none");
+        model.addAttribute("upChangePassShow","none");
         model.addAttribute("userPageReview","active");
         List<Review> reviews = reviewService.findAllByUserUsername(principal.getName());
         System.out.println(reviews);
@@ -106,18 +108,17 @@ public class UserController {
         return "userPage";
     }
 
-    @GetMapping("/userPage/rating")
-    public String userPageRating(Model model, Principal principal) {
+    @GetMapping("/userPage/changePass")
+    public String userPageChangePass(Model model, Principal principal) {
         if (principal == null) return "redirect:/";
         model.addAttribute("upPersonalShow","none");
         model.addAttribute("upInvoiceShow","none");
         model.addAttribute("upReviewShow","none");
-        model.addAttribute("upRatingShow","block");
-        model.addAttribute("userPageRating","active");
+        model.addAttribute("upChangePassShow","block");
+        model.addAttribute("userPageCangePass","active");
         model.addAttribute("loggedUser", uService.findOneWithCompanyData(uService.findByUsername(principal.getName()).getId()));
         return "userPage";
     }
-
 
     @GetMapping("/userPage/detailsInvoice{id}")
     public String detailsInvoice(@PathVariable("id") int id,
@@ -221,31 +222,83 @@ public class UserController {
     }
 
 
+    @GetMapping("/passrecPage")
+    public String passrecPage() {
+        return "passrecPage";
+    }
 
     @PostMapping("/passrecovery")
-    public String passrecovery(@ModelAttribute("passrecUser") @Validated User user,
-                               BindingResult result, Model model) {
+    public String passrecovery(@RequestParam String userEmail,
+                               @RequestHeader String host,
+                               Model model) {
 
-        //System.out.println(user);
-//        user = (User) user;
+        System.out.println(userEmail);
 
-        /*if (result.hasErrors()) {
-            model.addAttribute("passRecModDisplay", "block");
-            return "index";
+        User user = uService.findByEmail(userEmail);
+
+        if (user == null){
+            //TODO Add message
+            return "redirect:/user/passrecPage";
         }
-        User fUser = uService.findByLogin(user.getLogin());
 
-        if (fUser != null) {
-            if (!uService.userTempPassIsValid(fUser)) {
-                uService.setTempPassword(fUser.getId(), generateTempPass());
-                fUser = uService.findOne(fUser.getId());
-                System.out.println(fUser);
-                System.out.println(fUser.getCreateTempPassword());
-            }
-            double min = (System.currentTimeMillis() - fUser.getCreateTempPassword().getTime())/60000;
-            mailService.sendMailRecPass(fUser.getLogin(),fUser.getTempPassword(), (5.0-min));
-        }*/
-        return "index";
+        String tempLink = generateTempPass(30);
+        String fullTempLink = "/user/setNewPass?tempLink="+ tempLink;
+
+        user.setPassRecCode(passwordEncoder.encode(tempLink));
+        user.setTimestampOfPassRec(Timestamp.valueOf(LocalDateTime.now()));
+
+        fullTempLink += "&un="+user.getUsername();
+
+        uService.save(user);
+
+        mailService.sendMailRecPass(user.getEmail(),"http://" + host + fullTempLink, 5);
+
+        //TODO Add message
+
+        return "redirect:/main/index";
+    }
+
+    @GetMapping("setNewPass")
+    public String setNewPass(@RequestParam String tempLink,
+                             @RequestParam String un,
+                             Model model) {
+        User user = uService.findByUsername(un);
+
+        if (user == null) return "redirect:/main/index";
+
+        if (!passwordEncoder.matches(tempLink,user.getPassRecCode())) {
+            System.out.println("This link is damaged");
+            //TODO Add message
+            return "redirect:/main/index";
+        }
+        Timestamp timestampOfPassRec = user.getTimestampOfPassRec();
+        long timePassed = System.currentTimeMillis() - timestampOfPassRec.getTime();
+        if (timePassed > 300000) {
+            System.out.println("This link doesn't valid");
+            //TODO Add message
+            return "redirect:/main/index";
+        }
+        model.addAttribute("tempLink", tempLink);
+        model.addAttribute("un", un);
+        return "setNewPassPage";
+    }
+
+    @PostMapping("/saveNewPass")
+    public String saveNewPass(@RequestParam String newPass,
+                              @RequestParam String tempLink,
+                              @RequestParam String un) {
+        User user = uService.findByUsername(un);
+        if (!passwordEncoder.matches(tempLink,user.getPassRecCode())) {
+            System.out.println("Something's wrong");
+            //TODO Add message
+            return "redirect:/main/index";
+        }
+        System.out.println(newPass);
+        user.setPassword(passwordEncoder.encode(newPass));
+        user.setPassRecCode(null);
+        user.setTimestampOfPassRec(null);
+        uService.save(user);
+        return "redirect:/user/login";
     }
 
 
@@ -261,10 +314,12 @@ public class UserController {
     private ReviewService reviewService;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    private MailService mailService;
 
 
 
-    private String generateTempPass(){
+    private String generateTempPass(int length){
         String pass = "";
         Random r = new Random();
         List<Supplier<Integer>> funcs = new ArrayList<>();
@@ -274,7 +329,7 @@ public class UserController {
         funcs.add(() -> {return (r.nextInt(26)+65);});
         // smaller = 97 - 122
         funcs.add(() -> {return (r.nextInt(26)+97);});
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < length; i++){
             char ch = (char) (int) funcs.get(r.nextInt(3)).get();
             pass += ch;
         }

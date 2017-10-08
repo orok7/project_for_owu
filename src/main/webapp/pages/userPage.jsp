@@ -14,7 +14,7 @@
                 <li class="${userPageInvoice}"><a href="/user/userPage/invoice">Замовлення</a></li>
                 <li class="${userPagePersonal}"><a href="/user/userPage/personal">Особисті дані</a></li>
                 <li class="${userPageReview}"><a href="/user/userPage/review">Відгуки та оцінки</a></li>
-                <li class="${userPageRating}"><a href="/user/userPage/rating">Змінити пароль</a></li>
+                <li class="${userPageCangePass}"><a href="/user/userPage/changePass">Змінити пароль</a></li>
             </ul>
         </div>
     </nav>
@@ -76,8 +76,13 @@
     </div>
     <br>
 
-    <div class="container" style="display: ${upRatingShow};">
-        <h1>Your can't change password now, please try again later</h1>
+    <div class="container" style="display: ${upChangePassShow};">
+        <h1>Зміна паролю</h1>
+        <form action="">
+            <input type="password" id="oldPass">
+            <input type="password" id="newPass">
+            <input type="password" id="newPassAgain">
+        </form>
     </div>
 
 </div>
@@ -86,3 +91,41 @@
 
 </body>
 </html>
+
+<script>
+
+    $(function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+    });
+
+    function submitSetNewPassForm() {
+        let oldPass = $('#oldPass').val();
+        $.ajax({
+            url: "/user/passValidate",
+            type: 'POST',
+            data: {userPass: oldPass},
+            success: function (result) {
+
+                var options = {
+                    display: 'block',
+                    position: 'fixed',
+                    left: 10,
+                    right: 10,
+                    bottom: 10
+                };
+
+                $('#addSuccess').css(options);
+                setTimeout(function () {
+                    $('#addSuccess').css("display", "none")
+                }, 1000);
+            },
+            error: function () {
+                alert("error!!!");
+            }
+        });
+    }
+</script>
